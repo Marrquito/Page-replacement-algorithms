@@ -177,7 +177,81 @@ void Otm()
     }
 
     printf("OTM %d\n", qtdFaltas);
-    
+
+    free(quadros);
+    free(proxRef);
+}
+
+void Lru()
+{
+    int *quadros    = NULL;
+    int *proxRef    = NULL;
+    int  idx        = 0;
+    int  qtdFaltas  = 0;
+    int  flag       = 0;
+    int  menor      = 0;
+    int  aux        = 0;
+
+    quadros = (int *) calloc(memoria->qtdQuadros, sizeof(int) * memoria->qtdQuadros);
+    assert(quadros);
+
+    proxRef = (int *) calloc(memoria->qtdQuadros, sizeof(int) * memoria->qtdQuadros);
+    assert(proxRef);
+
+    for(int i = 0; i < memoria->qtdMemRef; i++)
+    {
+        flag = 0;
+        
+        for(int j = 0; j < memoria->qtdQuadros; j++)
+        {
+            if(memoria->memRef[i] == quadros[j])
+            {
+                flag = 1;
+                break;
+            }
+        }
+
+        if(!flag)
+        {
+            for(int j = 0; j < memoria->qtdQuadros; j++)
+            {
+                proxRef[j] = 0;
+                
+                for(int k = i - 1; k >= 0; k--)
+                {
+                    if(memoria->memRef[k] == quadros[j])
+                    {
+                        proxRef[j] = k;
+                        break;
+                    }
+                }
+            }
+
+            menor = 0;
+            idx   = 0;
+
+            for(int j = 0; j < memoria->qtdQuadros; j++)
+            {
+                if(proxRef[j] == 0)
+                {
+                    idx = j;
+                    break;
+                }
+
+                if(proxRef[j] < menor)
+                {
+                    menor = proxRef[j];
+                    idx   = j;
+                }
+            }
+
+            quadros[idx] = memoria->memRef[i];
+            qtdFaltas++;
+        }
+    }
+
+    printf("LRU %d\n", qtdFaltas);
+
     free(quadros);
     free(proxRef);
 }
@@ -202,6 +276,10 @@ int main()
 
     Fifo();
     Otm();
+    Lru();
+
+    free(memoria->memRef);
+    free(memoria);
 
     return 0;
 }
