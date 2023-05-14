@@ -12,9 +12,11 @@ typedef struct mem {
 
 Memoria *memoria  = NULL;
 
-int leArquivo();
+int LeArquivo();
 Memoria *MemInit(int qtdRefMemoria);
-
+void Fifo();
+void Otm();
+void Lru();
 
 Memoria *MemInit(int qtdRefMemoria)
 {
@@ -30,7 +32,7 @@ Memoria *MemInit(int qtdRefMemoria)
 
 // QTD QUADROS
 // SEQ REF MEMORIA
-int leArquivo()
+int LeArquivo()
 {
     FILE *ARQ    = NULL;
     char *result = NULL;
@@ -69,12 +71,47 @@ int leArquivo()
     return 0;
 }
 
+void Fifo()
+{
+    int *quadros    = NULL;
+    int  idx        = 0;
+    int  qtdFaltas  = 0;
+    int  flag       = 0;
+
+    quadros = (int *) calloc(memoria->qtdQuadros, sizeof(int) * memoria->qtdQuadros);
+    assert(quadros);
+
+    for(int i = 0; i < memoria->qtdMemRef; i++)
+    {
+        flag = 0;
+        
+        for(int j = 0; j < memoria->qtdQuadros; j++)
+        {
+            if(memoria->memRef[i] == quadros[j])
+            {
+                flag = 1;
+                break;
+            }
+        }
+
+        if(!flag)
+        {
+            quadros[idx] = memoria->memRef[i];
+            idx          = (idx + 1) % memoria->qtdQuadros;
+            qtdFaltas++;
+        }
+    }
+
+    printf("FIFO %d\n", qtdFaltas);
+    free(quadros);
+}
+
 
 int main()
 {
     int rc;
 
-    rc = leArquivo();
+    rc = LeArquivo();
     
     switch(rc)
     {
@@ -88,6 +125,7 @@ int main()
             return -2;
     }
 
+    Fifo();
 
     return 0;
 }
