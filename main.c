@@ -116,7 +116,6 @@ void Otm()
     int  qtdFaltas  = 0;
     int  flag       = 0;
     int  maior      = 0;
-    int  aux        = 0;
 
     quadros = (int *) calloc(memoria->qtdQuadros, sizeof(int) * memoria->qtdQuadros);
     assert(quadros);
@@ -139,6 +138,13 @@ void Otm()
 
         if(!flag)
         {
+            if(qtdFaltas < memoria->qtdQuadros -1)
+            {
+                quadros[qtdFaltas] = memoria->memRef[i];
+                qtdFaltas++;
+                continue;
+            }
+
             for(int j = 0; j < memoria->qtdQuadros; j++)
             {
                 proxRef[j] = 0;
@@ -190,7 +196,6 @@ void Lru()
     int  qtdFaltas  = 0;
     int  flag       = 0;
     int  menor      = 0;
-    int  aux        = 0;
 
     quadros = (int *) calloc(memoria->qtdQuadros, sizeof(int) * memoria->qtdQuadros);
     assert(quadros);
@@ -213,6 +218,13 @@ void Lru()
 
         if(!flag)
         {
+            if(qtdFaltas < memoria->qtdQuadros - 1)
+            {
+                quadros[qtdFaltas] = memoria->memRef[i];
+                qtdFaltas++;
+                continue;
+            }
+
             for(int j = 0; j < memoria->qtdQuadros; j++)
             {
                 proxRef[j] = 0;
